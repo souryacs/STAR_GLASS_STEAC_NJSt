@@ -1,0 +1,15 @@
+Version 1.0
+-----------
+
+This version corresponds to the basic release of executing all three methods with single allelle gene trees.
+Input gene trees can be in either nexus or newick format.
+
+Version 2.0
+------------
+
+Upgraded code to support input multi allele gene trees. Basic dendropy supports single allele gene trees. 
+So, we have introduced a parser algorithm which takes care of the alleles and converts input multi 
+allele gene trees into a single allele one, suitable for processing in dendropy.
+
+Input gene treelist should be in newick format.
+
