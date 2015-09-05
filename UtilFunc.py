@@ -28,6 +28,39 @@ def Read_Gene_Data_Treelist(ROOTED_TREE, PRESERVE_UNDERSCORE, INPUT_FILE_FORMAT,
   return Gene_TreeList
 
 #--------------------------------------------------------
+# this function defines couplet branch count with respect to the MRCA between two nodes
+#--------------------------------------------------------
+def DefineAccBranch(lca_node_level, node1, node2, GENE_TREE_TYPE):
+
+  sum_of_branch_count = ((node1.level() - lca_node_level) + (node2.level() - lca_node_level)) - 1
+  
+  if (GENE_TREE_TYPE == MULTI_ALLELE):
+    key1 = (AlleleToTaxon(node1.taxon.label), AlleleToTaxon(node2.taxon.label))
+    key2 = (AlleleToTaxon(node2.taxon.label), AlleleToTaxon(node1.taxon.label))
+    #print 'key1: ', key1, 'key2: ', key2
+  else:
+    key1 = (node1.taxon.label, node2.taxon.label)
+    key2 = (node2.taxon.label, node1.taxon.label)
+  
+  """ 
+  we insert the following information for this couplet
+  1) increment the number of supporting tree
+  2) add the couplet branch count value
+  """
+  if key1 in TaxaPair_Reln_Dict:
+    TaxaPair_Reln_Dict[key1]._IncrSupportTreeCount()
+    TaxaPair_Reln_Dict[key1]._AddLevel(sum_of_branch_count)
+  elif key2 in TaxaPair_Reln_Dict:
+    TaxaPair_Reln_Dict[key2]._IncrSupportTreeCount()
+    TaxaPair_Reln_Dict[key2]._AddLevel(sum_of_branch_count)
+  else:
+    TaxaPair_Reln_Dict.setdefault(key1, Reln_TaxaPair())
+    TaxaPair_Reln_Dict[key1]._IncrSupportTreeCount()
+    TaxaPair_Reln_Dict[key1]._AddLevel(sum_of_branch_count)
+
+  return
+
+#--------------------------------------------------------
 # this function defines coalescence time with respect to the MRCA between two nodes
 #--------------------------------------------------------
 def DefineCoalTime(mrca_node, node1, node2, GENE_TREE_TYPE):
@@ -105,6 +138,7 @@ def DeriveCoupletRelations(Curr_tree, METHOD_USED, GENE_TREE_TYPE):
     # compute the coalescence rank associated with this node
     # this rank value will be used for all taxa pairs underlying this node
     curr_node_rank = no_of_taxa - curr_node.level()
+    curr_node_level = curr_node.level()
           
     # list the leaf and internal children of the current node
     curr_node_child_leaf_nodes = []
@@ -132,8 +166,10 @@ def DeriveCoupletRelations(Curr_tree, METHOD_USED, GENE_TREE_TYPE):
 	  """
 	  if (METHOD_USED == STAR):
 	    DefineCoalRank(curr_node_rank, curr_node_child_leaf_nodes[i], curr_node_child_leaf_nodes[j], GENE_TREE_TYPE)  
-	  else:
+	  elif (METHOD_USED == GLASS) or (METHOD_USED == STEAC):
 	    DefineCoalTime(curr_node, curr_node_child_leaf_nodes[i], curr_node_child_leaf_nodes[j], GENE_TREE_TYPE)
+	  else:
+	    DefineAccBranch(curr_node_level, curr_node_child_leaf_nodes[i], curr_node_child_leaf_nodes[j], GENE_TREE_TYPE)
 	    
     # one leaf node (direct descendant) and another leaf node (under one internal node)
     # will be related by ancestor / descendant relations
@@ -154,8 +190,10 @@ def DeriveCoupletRelations(Curr_tree, METHOD_USED, GENE_TREE_TYPE):
 	    """
 	    if (METHOD_USED == STAR):
 	      DefineCoalRank(curr_node_rank, p, r, GENE_TREE_TYPE)
-	    else:
+	    elif (METHOD_USED == GLASS) or (METHOD_USED == STEAC):
 	      DefineCoalTime(curr_node, p, r, GENE_TREE_TYPE)
+	    else:
+	      DefineAccBranch(curr_node_level, p, r, GENE_TREE_TYPE)
     
     # finally a pair of leaf nodes which are descendant of internal nodes will be related by NO_EDGE relation
     if (len(curr_node_child_internal_nodes) > 1):
@@ -176,8 +214,10 @@ def DeriveCoupletRelations(Curr_tree, METHOD_USED, GENE_TREE_TYPE):
 	      """      
 	      if (METHOD_USED == STAR):
 		DefineCoalRank(curr_node_rank, p, q, GENE_TREE_TYPE)
-	      else:
+	      elif (METHOD_USED == GLASS) or (METHOD_USED == STEAC):
 		DefineCoalTime(curr_node, p, q, GENE_TREE_TYPE)
+	      else:
+		DefineAccBranch(curr_node_level, p, q, GENE_TREE_TYPE)
   
   return
 

@@ -70,7 +70,8 @@ def parse_options():
 			  default=1, \
 			  help="1 - STAR (couplet coalescence rank for gene trees) \
 			  2 - GLASS (minimum couplet coalescence time for gene trees)  \
-			  3 - STEAC (average couplet coalescence time with respect to gene trees")
+			  3 - STEAC (average couplet coalescence time with respect to gene trees) \
+			  4 - NJ_st (average couplet branch count with respect to gene trees)")
        
   opts, args = parser.parse_args()
   return opts, args
@@ -115,6 +116,8 @@ def main():
       dir_of_curr_exec = dir_of_inp_file + 'GLASS'
     elif (METHOD_USED == STEAC):
       dir_of_curr_exec = dir_of_inp_file + 'STEAC'      
+    elif (METHOD_USED == NJ_st):
+      dir_of_curr_exec = dir_of_inp_file + 'NJ_st'      
     # append the current output directory in the text file
     Output_Text_File = dir_of_curr_exec + '/' + 'Complete_Desription.txt'
     # create the directory

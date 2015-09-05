@@ -55,6 +55,9 @@ def Form_Species_Tree_NJ_Cluster(Star_Tree_Initial, COMPLETE_INPUT_TAXA_LIST, ME
       # use the average coalescence time information as the distance metric for NJ like clustering (STEAC)
       Dist_Mat_clust_pair_NJ[spec1_idx][spec2_idx] = Dist_Mat_clust_pair_NJ[spec2_idx][spec1_idx] = TaxaPair_Reln_Dict[l]._GetAvgCoalescenceTime()
       #print 'spec1_idx: ', spec1_idx, ' spec2_idx: ', spec2_idx, ' avg coal time: ',  Dist_Mat_clust_pair_NJ[spec1_idx][spec2_idx], ' supporting trees: ', TaxaPair_Reln_Dict[l]._GetSupportTreeCount()
+    else:
+      # use the average branch count information as the distance metric for NJ like clustering (NJ_st)
+      Dist_Mat_clust_pair_NJ[spec1_idx][spec2_idx] = Dist_Mat_clust_pair_NJ[spec2_idx][spec1_idx] = TaxaPair_Reln_Dict[l]._GetAvgSumLevel()
 
   # allocate one new square matrix which will contain the NJ based modified distance matrix (used for minimum finding routine)
   Norm_DistMat_ClustPair_NJ = numpy.zeros((no_of_taxa_clust, no_of_taxa_clust), dtype=numpy.float)

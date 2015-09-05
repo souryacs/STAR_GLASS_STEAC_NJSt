@@ -48,6 +48,7 @@ DEBUG_LEVEL = 0
 STAR = 1
 GLASS = 2
 STEAC = 3
+NJ_st = 4
 
 # type of input gene trees
 SINGLE_ALLELE = 1
@@ -80,6 +81,11 @@ class Reln_TaxaPair(object):
     individual coalescence information, in such a case, are inserted in this list    
     """
     self.coalescence_time_list = []
+    """ 
+    this list contains the number of levels (tree branches) between individual couplets
+    computed for all the gene trees
+    """
+    self.level_info_list = []
     
   ## histogram plotting
   #def PlotHist(self, inp_key, inp_no, outdir, inp_str):
@@ -119,19 +125,13 @@ class Reln_TaxaPair(object):
   # this function returns the number of trees supporting the couplet
   def _GetSupportTreeCount(self):
     return self.tree_support_count        
-    
-  #def _AddScoreProductXLLevel(self, val):
-    #self.score_product_xl_level_list.append(val)
-    
-  #def _AddLevel(self, val):
-    #self.level_info_list.append(val)
-    
-  #def _AddTotalLineage(self, val):
-    #self.lineage_sum_list.append(val)
-    
-  #def _AddAccumulatedRank(self, val):
-    #self.accumulated_rank_list.append(val)
-    
+        
+  def _AddLevel(self, val):
+    self.level_info_list.append(val)
+
+  def _GetAvgSumLevel(self):
+    return (sum(self.level_info_list) * 1.0) / self.tree_support_count
+        
   # this function adds one rank information of this taxa pair
   # corresponding to one input gene tree
   def _AddRankInfo(self, rank_val):
