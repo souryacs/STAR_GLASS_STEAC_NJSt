@@ -7,9 +7,18 @@ Input gene trees can be in either nexus or newick format.
 Version 2.0
 ------------
 
-Upgraded code to support input multi allele gene trees. Basic dendropy supports single allele gene trees. 
+Improvements in the version:
+
+1) Upgraded code to support input multi allele gene trees. 
+
+Note: Basic dendropy supports single allele gene trees. 
 So, we have introduced a parser algorithm which takes care of the alleles and converts input multi 
 allele gene trees into a single allele one, suitable for processing in dendropy.
 
-Input gene treelist should be in newick format.
+2) Input gene treelist should be in newick format for multi allele gene trees. However, for single allele gene 
+trees, nexus formatted input gene trees may  be provided.
+
+3) We have included the method NJ_st (Liu. et. al. 2011) for execution in this new version. The method 
+computes the average branch count between individual couplets, with respect to all the gene trees, 
+and constructs species tree using Neighbor-Joining (NJ) method.
 
