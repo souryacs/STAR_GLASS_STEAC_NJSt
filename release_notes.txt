@@ -22,3 +22,9 @@ trees, nexus formatted input gene trees may  be provided.
 computes the average branch count between individual couplets, with respect to all the gene trees, 
 and constructs species tree using Neighbor-Joining (NJ) method.
 
+Version 2.1
+------------
+
+Multi allele gene tree parsing module has been upgraded.
+Indentation of the code is thoroughly checked and code is cleaned.
+
