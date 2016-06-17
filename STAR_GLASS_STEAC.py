@@ -119,7 +119,7 @@ def main():
 		elif (METHOD_USED == STEAC):
 			dir_of_curr_exec = dir_of_inp_file + 'STEAC'      
 		elif (METHOD_USED == NJ_st):
-			dir_of_curr_exec = dir_of_inp_file + 'NJ_st'      
+			dir_of_curr_exec = dir_of_inp_file + 'NJ_ST'      
 		# append the current output directory in the text file
 		Output_Text_File = dir_of_curr_exec + '/' + 'Complete_Desription.txt'
 		# create the directory
@@ -191,9 +191,10 @@ def main():
 		#--------------------------------
 		if (GENE_TREE_TYPE == SINGLE_ALLELE):
 			taxa_labels_curr_tree = Gene_TreeList[tr_idx].infer_taxa().labels()
-			fp = open(Output_Text_File, 'a')
-			fp.write('\n Tree no : ' + str(tr_idx+1) + ' no of leaf nodes: ' + str(len(taxa_labels_curr_tree)))
-			fp.close()
+			if (DEBUG_LEVEL > 2):
+				fp = open(Output_Text_File, 'a')
+				fp.write('\n Tree no : ' + str(tr_idx+1) + ' no of leaf nodes: ' + str(len(taxa_labels_curr_tree)))
+				fp.close()
 			""" 
 			append taxa information in the global list of taxon
 			provided it is not already present there
@@ -203,11 +204,14 @@ def main():
 					COMPLETE_INPUT_TAXA_LIST.append(t)
 					if (DEBUG_LEVEL > 2):
 						fp.write('\n new taxa : ' + str(t))
+		else:
+			break
 
 	# closing the output text file
-	fp = open(Output_Text_File, 'a')
-	fp.write('\n COMPLETE_INPUT_TAXA_LIST: ' + str(COMPLETE_INPUT_TAXA_LIST))
-	fp.close()
+	if (DEBUG_LEVEL > 2):
+		fp = open(Output_Text_File, 'a')
+		fp.write('\n COMPLETE_INPUT_TAXA_LIST: ' + str(COMPLETE_INPUT_TAXA_LIST))
+		fp.close()
 		
 	""" 
 	important: process individual trees to find individual couplet relations 

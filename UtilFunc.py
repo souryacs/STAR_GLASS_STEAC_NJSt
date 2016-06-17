@@ -1,6 +1,14 @@
 import Header
 from Header import *
 
+#---------------------------------------------
+"""
+the function is used for checking equality of two floating point numbers
+"""
+def FlEq(a, b, eps=0.000001):
+	#return (abs(math.log(a) - math.log(b)) <= eps)
+	return (abs(a - b) <= eps)
+
 #--------------------------------------------------
 # this function returns the label of an internal or a leaf node 
 # in terms of newick representation

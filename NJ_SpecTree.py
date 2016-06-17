@@ -123,11 +123,25 @@ def Form_Species_Tree_NJ_Cluster(Star_Tree_Initial, COMPLETE_INPUT_TAXA_LIST, ME
 					min_val = Norm_DistMat_ClustPair_NJ[i][j]
 					min_idx_i = i
 					min_idx_j = j
-				elif (Norm_DistMat_ClustPair_NJ[i][j] == min_val):
-					# here we prioritize the cluster pair having minimum number of species
-					if (len(clust_species_list[i]) + len(clust_species_list[j])) < (len(clust_species_list[min_idx_i]) + len(clust_species_list[min_idx_j])):
+				# add - sourya - 17/06/2016
+				elif (FlEq(Norm_DistMat_ClustPair_NJ[i][j], min_val) == True):
+					if (Dist_Mat_clust_pair_NJ[i][j] < Dist_Mat_clust_pair_NJ[min_idx_i][min_idx_j]):
+						"""
+						here the NJ based distance matrix values are same
+						so, we check the original distance matrix entries
+						and prefer the element with the lowest value
+						"""
 						min_idx_i = i
 						min_idx_j = j
+				# end add - sourya
+				# comment - sourya
+				# this heuristic is not a part of original STAR / STEAC / NJst algorithm
+				#elif (Norm_DistMat_ClustPair_NJ[i][j] == min_val):
+					## here we prioritize the cluster pair having minimum number of species
+					#if (len(clust_species_list[i]) + len(clust_species_list[j])) < (len(clust_species_list[min_idx_i]) + len(clust_species_list[min_idx_j])):
+						#min_idx_i = i
+						#min_idx_j = j
+				# end comment - sourya
 			
 		# note down the taxa list in these two indices (min_idx_i and min_idx_j) of the clust_species_list
 		taxa_list = []
