@@ -10,18 +10,23 @@ def FlEq(a, b, eps=0.000001):
 	return (abs(a - b) <= eps)
 
 #--------------------------------------------------
-# this function returns the label of an internal or a leaf node 
-# in terms of newick representation
+"""
+this function returns the label of an internal or a leaf node 
+in terms of newick representation
+"""
 def Node_Label(inp_node):
 	return str(inp_node.as_newick_string(suppress_edge_lengths=True))
 
-##-----------------------------------------------------
-''' this function reads the input tree collection file
-the file contains a collection of input candidate source trees
-each such tree is composed of a large no of taxa (placed at the leaves of the tree) '''
+#-----------------------------------------------------
+"""
+this function reads the input tree list file
+@parameters:
+ROOTED_TREE and PRESERVE_UNDERSCORE are used for the dendropy based tree reading
+INPUT_FILE_FORMAT: depending on its value, the trees are read from the input file 
+according to NEWICK or NEXUS format
+INPUT_FILENAME: the input file containing the treelist
+"""
 def Read_Gene_Data_Treelist(ROOTED_TREE, PRESERVE_UNDERSCORE, INPUT_FILE_FORMAT, INPUT_FILENAME):
-	''' depending on the value of INPUT_FILE_FORMAT
-	the data is read from the file according to NEWICK or NEXUS format '''
 	if (INPUT_FILE_FORMAT == 1):
 		Gene_TreeList = dendropy.TreeList.get_from_path(INPUT_FILENAME, \
 									schema="newick", \
@@ -36,7 +41,7 @@ def Read_Gene_Data_Treelist(ROOTED_TREE, PRESERVE_UNDERSCORE, INPUT_FILE_FORMAT,
 	return Gene_TreeList
 
 #--------------------------------------------------------
-# this function defines couplet branch count with respect to the MRCA between two nodes
+# this function defines couplet internode count with respect to the MRCA between two nodes
 #--------------------------------------------------------
 def DefineAccBranch(lca_node_level, node1, node2, GENE_TREE_TYPE):
 
@@ -134,7 +139,7 @@ def DefineCoalRank(lca_node_rank, node1, node2, GENE_TREE_TYPE):
 	return
       
 #--------------------------------------------------------
-# this function derives coupket relations belonging to one tree
+# this function derives couplet relations belonging to one tree
 # that is provided as an input argument to this function
 #--------------------------------------------------------
 def DeriveCoupletRelations(Curr_tree, METHOD_USED, GENE_TREE_TYPE):

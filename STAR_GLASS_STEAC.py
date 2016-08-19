@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-##---------------------------------------------
+#---------------------------------------------
 ''' 
 this program is used to generate a spcies tree from a set of gene trees
 gene trees generally associate topological conflicts, due to ILS
@@ -10,14 +10,15 @@ Dept of CSE, IIT Kharagpur
 V1.0 - 12.01.2015 - basic code
 V2.0 - 19.06.2015 - removed Phylip NJ and metrics 4 and 5 implementations
 V3.0 - 03.09.2015 - added multi allelle gene tree support
+V4.0 - 19.08.2016 - code clean, minor changes, documentation
 ''' 
 
-## Copyright 2015 Sourya Bhattacharyya and Jayanta Mukherjee.
-## All rights reserved.
-##
-## See "LICENSE.txt" for terms and conditions of usage.
-##
-##---------------------------------------------
+# Copyright 2015, 2016 Sourya Bhattacharyya and Jayanta Mukherjee.
+# All rights reserved.
+#
+# See "LICENSE.txt" for terms and conditions of usage.
+#
+#---------------------------------------------
 
 import Header
 from Header import *
@@ -26,8 +27,10 @@ from UtilFunc import *
 import NJ_SpecTree
 from NJ_SpecTree import *
 
-##-----------------------------------------------------
-# this function is useful to parse various options for input data processing
+#-----------------------------------------------------
+"""
+this function is useful to parse various options for input data processing
+"""
 def parse_options():  
 	parser = OptionParser()
 		
@@ -76,7 +79,7 @@ def parse_options():
 	opts, args = parser.parse_args()
 	return opts, args
   
-##-----------------------------------------------------
+#-----------------------------------------------------
 # main function 
 def main():  
 	opts, args = parse_options()
@@ -237,9 +240,10 @@ def main():
 		for l in TaxaPair_Reln_Dict:
 			TaxaPair_Reln_Dict[l]._PrintTaxaPairRelnInfo(l, METHOD_USED, Output_Text_File)  
 	#-------------------------------------------------------------
-			
-	# generate a star network from the input taxa labels
-	# form a newick formatted string containing the tree
+	"""
+	generate a star network from the input taxa labels
+	form a newick formatted string containing the tree
+	"""
 	star_net_str = ""
 	for i in range(len(COMPLETE_INPUT_TAXA_LIST)):
 		star_net_str = star_net_str + str(COMPLETE_INPUT_TAXA_LIST[i])
@@ -247,7 +251,9 @@ def main():
 			star_net_str = star_net_str + ","
 	star_net_str = "(" + star_net_str + ")"
 
-	# this tree denotes the initial star configuration (rooted at the central hub)
+	"""
+	this tree denotes the initial star configuration (rooted at the central hub)
+	"""
 	Star_Tree_Initial = dendropy.Tree.get_from_string(star_net_str, schema="newick", \
 								preserve_underscores=PRESERVE_UNDERSCORE, \
 								default_as_rooted=True)          
@@ -257,7 +263,9 @@ def main():
 	fp.write('\n from tree ---: ' + Star_Tree_Initial.as_newick_string())
 	fp.close()
 
-	# now perform the agglomerative clustering technique based on the extra lineages
+	"""
+	now perform the agglomerative clustering technique based on the extra lineages
+	"""
 	Form_Species_Tree_NJ_Cluster(Star_Tree_Initial, COMPLETE_INPUT_TAXA_LIST, METHOD_USED, Output_Text_File)
 
 	# note the time
@@ -291,10 +299,12 @@ def main():
 
 	if (len(COMPLETE_INPUT_TAXA_LIST) > 0):
 		COMPLETE_INPUT_TAXA_LIST[:] = []
+		
+	return
   
 #-----------------------------------------------------
 if __name__ == "__main__":
-    main() 
+	main() 
 
 
 

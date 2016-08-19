@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 """
-program for species tree estimation
+program for species tree estimation using features computed for individual couplets
 computes four criteria - 
-1) Sum of deep coalescence
-2) Rank statistics 
-3) Min coalescence time
-4) Avg coalescence time
+1) Coalescence Rank statistics (STAR)
+2) Min coalescence time (GLASS)
+3) Avg coalescence time (STEAC)
+4) Internode count statistics (NJst)
 """
 
 import dendropy
@@ -17,10 +17,11 @@ import os
 import numpy
 #import matplotlib.pyplot as plt
 #import pylab
-import re
+#import re
 
-""" this dictionary defines the taxa pair relations
-each entry is indexed by two nodes """
+""" 
+this dictionary contains the features for individual couplets
+"""
 TaxaPair_Reln_Dict = dict()
 
 """ 
@@ -42,12 +43,15 @@ a tree contain a list, where individual element of a list is a sublist of 2 elem
 """
 Tree_Allele_Dict = dict()
 
-
-# this text file stores all the printing output
+"""
+this text file stores all the printing output
+"""
 Output_Text_File = 'complete_output_description.txt'
 
-# this is the debug level
-# set for printing the necessary information
+"""
+this is the debug level
+set for printing the necessary information
+"""
 DEBUG_LEVEL = 0
 
 ## this is for plotting various statistical parameters
@@ -64,7 +68,7 @@ NJ_st = 4
 SINGLE_ALLELE = 1
 MULTI_ALLELE = 2
 
-##-----------------------------------------------------
+#-----------------------------------------------------
 """ 
 this class defines the connectivity relationship between a pair of taxa
 initially the information are obtained from the input source trees
@@ -85,15 +89,15 @@ class Reln_TaxaPair(object):
 		"""
 		self.rank_statistics_list = []
 		"""
-		** branch length distance between individual leaves to their MRCA nodes
+		branch length distance between individual leaves to their MRCA nodes
 		for single allelle gene trees, this list corresponds to the coalescence time information of this couplet for individual source trees
 		for multi allelle gene trees, a particular gene tree may contain more than one instance of this couplet
 		individual coalescence information, in such a case, are inserted in this list    
 		"""
 		self.coalescence_time_list = []
 		""" 
-		this list contains the number of levels (tree branches) between individual couplets
-		computed for all the gene trees
+		This variable contains the sum of internode count distances between this couplet
+		with respect to all the input gene trees
 		"""
 		self.level_info_list = []
 		
@@ -126,84 +130,80 @@ class Reln_TaxaPair(object):
 		##plt.show()  
 		#output_image_filename = outdir + inp_str + '_' + str(inp_key[0]) + '_and_' + str(inp_key[1]) + '.jpg'
 		#pylab.savefig(output_image_filename)	# saves the figure in custom specified image
-				
-	# this function adds the count of tree according to the support of 
-	# corresponding couplet in the input tree
+	
+	"""
+	this function adds the count of tree if that tree supports the current couplet 
+	under consideration
+	"""
 	def _IncrSupportTreeCount(self):
 		self.tree_support_count = self.tree_support_count + 1
-					
-	# this function returns the number of trees supporting the couplet
+	
+	"""
+	this function returns the number of trees supporting the couplet
+	"""
 	def _GetSupportTreeCount(self):
 		return self.tree_support_count        
-				
+	
+	"""
+	adds the internode count distance for this couplet, with respect to a particular input tree
+	"""
 	def _AddLevel(self, val):
 		self.level_info_list.append(val)
 
+	"""
+	returns the average internode count distance between this couplet
+	"""
 	def _GetAvgSumLevel(self):
 		return (sum(self.level_info_list) * 1.0) / self.tree_support_count
-				
-	# this function adds one rank information of this taxa pair
-	# corresponding to one input gene tree
+	
+	"""
+	this function adds the LCA based coalescence rank information of this taxa pair
+	corresponding to one input gene tree
+	"""
 	def _AddRankInfo(self, rank_val):
 		self.rank_statistics_list.append(rank_val)
-				
-	# computes the average ranking information for this taxa pair
+	
+	"""
+	computes the average coalescence rank information for this taxa pair
+	used for the STAR method
+	"""
 	def _GetAvgRank(self):
 		return (sum(self.rank_statistics_list) * 1.0) / self.tree_support_count
 
-	## computes the minimum of the rank information
-	#def _GetMinRank(self):
-		#return min(self.rank_statistics_list)
-
-	## computes the minimum of the rank information
-	#def _GetMaxRank(self):
-		#return max(self.rank_statistics_list)
-
-	# this function adds the coalescence time information
-	# corresponding to one input gene tree
-	# 1st arg - distance from taxa 1 to MRCA
-	# 2nd arg - distance from taxa 2 to MRCA
-	# 3rd arg - sum of distances from taxa 1 to taxa 2
+	"""
+	Appends the coalescence time information for this couplet
+	with respect to a particular gene tree
+	the time value (coalescence_sum) is computed for both the taxa, with respect to their LCA node in the current gene tree
+	"""
 	def _AddCoalescenceInfo(self, coalescence_sum):
 		self.coalescence_time_list.append(coalescence_sum)  
 
-	# computes the average coalescence time information for this taxa pair
+	"""
+	computes the average coalescence time for this taxa pair
+	used for the STEAC method
+	"""
 	def _GetAvgCoalescenceTime(self):
 		return (sum(self.coalescence_time_list) * 1.0) / len(self.coalescence_time_list)
-			
-	# computes the minimum coalescence time information for this taxa pair  
+	
+	"""
+	computes the minimum coalescence time information for this taxa pair  
+	used for the GLASS method
+	"""
 	def _GetMinCoalescenceTime(self):
 		return min(self.coalescence_time_list)
 
-	## computes the minimum coalescence time information for this taxa pair  
-	#def _GetMaxCoalescenceTime(self):
-		#return max(self.coalescence_time_list)
-			
-	## this function adds one extra lineage value of this taxa pair
-	## corresponding to one input gene tree
-	#def _AddExtraLineageCountInfo(self, xl_val):
-		#self.extra_lineage_sum_list.append(xl_val)
-			
-	## get the sum of extra lineages of this couplet
-	## with respect to all the input gene trees
-	#def _GetSumExtraLineage(self):
-		#return sum(self.extra_lineage_sum_list)
-
-	## get the sum of extra lineages of this couplet
-	## with respect to all the input gene trees
-	#def _GetAvgExtraLineage(self):
-		#return (sum(self.extra_lineage_sum_list) * 1.0) / self.tree_support_count
-			
-	# this function prints information for the current couplet
+	"""
+	this function prints information for the current couplet
+	"""
 	def _PrintTaxaPairRelnInfo(self, key, METHOD_USED, out_text_file):
 		fp = open(out_text_file, 'a')    
-		fp.write('\n taxa pair key: ' + str(key))
+		fp.write('\n Current couplet: ' + str(key))
 		if (METHOD_USED == STAR):
-			fp.write('\n *** rank info --- min: ' + str(self._GetMinRank()) \
-	+ ' max: ' + str(self._GetMaxRank()) + ' avg: ' + str(self._GetAvgRank()))
+			fp.write('\n *** avergae coalescence rank: ' + str(self._GetAvgRank()))
 		elif (METHOD_USED == GLASS) or (METHOD_USED == STEAC):
-			fp.write('\n *** coalescence time info --- min: ' + str(self._GetMinCoalescenceTime()) \
-	+ ' max: ' + str(self._GetMaxCoalescenceTime()) + ' avg: ' + str(self._GetAvgCoalescenceTime()))
+			fp.write('\n *** coalescence time info --- min: ' + str(self._GetMinCoalescenceTime()) + ' avg: ' + str(self._GetAvgCoalescenceTime()))
+		elif (METHOD_USED == NJ_st):
+			fp.write('\n *** Average internode count: ' + str(self._GetAvgSumLevel()))
 		fp.close()
 		
 	## this function plots various statistics distribution
