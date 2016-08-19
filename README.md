@@ -1,7 +1,7 @@
 # STAR_GLASS_STEAC
-Implements species tree construction from incongruent gene trees with Incomplete Lineage Sorting (ILS). 
+Implements various species tree construction methods from incongruent gene trees with Incomplete Lineage Sorting (ILS).
 
-Following three different methods are implemented in this package.
+Following four methods are implemented in this package.
 
 1) STAR (Liu et. al. 2009), which constructs species trees using couplet coalescence rank information.
 
@@ -9,10 +9,10 @@ Following three different methods are implemented in this package.
 
 3) GLASS (Roch et. al. 2010), which constructs species trees using minimum coalescence time for individual couplets.
 
-4) NJ_st (Liu et. al. 2011), which constructs species trees using average branch count for individual couplets.
+4) NJ_st (Liu et. al. 2011), which constructs species trees using average internode count for individual couplets.
 
 All of these methods use NJ based tree construction technique. Distance matrix (at couplet level) is 
-constructed using above mentioned measures.
+constructed using any of the above mentioned measures.
 
 -----------------
 Description
@@ -47,7 +47,7 @@ model species tree (if available), or to the input gene trees.
 Methods implemented
 -------------------
 
-Three methods are implemented and integrated in this framework, as follows:
+Four methods are implemented and integrated in this framework, as follows:
 
 1) STAR (Liu et. al. 2009) uses the coalescence rank of individual couplets to construct the 
 species tree using a neighbor joining (NJ) approach.
@@ -60,13 +60,14 @@ This algorithm does not apply for unweighted gene trees.
 with respect to the input gene trees. The coalescence time is approximated with the branch length information provided 
 in the weighted input gene trees. This algorithm does not apply for unweighted gene trees.
 
-Features
+4) NJ_st (Liu et. al. 2011): Here, the couplet based average internode count measure is employed 
+for NJ based species tree construction.
+
+Complexity
 ----------
-1) Couplet based processing. All three species tree construction methods associate O(MN^2 + N^3) time complexity 
+
+All four species tree construction methods associate O(MN^2 + N^3) time complexity 
 and O(N^2) space complexity, for N input taxa and M input trees.
-
-2) Single allelle gene trees are provided as inputs.
-
 
 Dependencies / Installation Requirements
 -----------------------------------------
@@ -84,11 +85,8 @@ We plan to support Python 3 environment in some future release.
 
 2) Dendropy 3.12.0 ( available on the link: https://pythonhosted.org/DendroPy/ )
 
-**** Note: there is a new release of Dendropy 4.0 but we have used 3.12.0 for the implementation. We did not upgrade 
-the code for Dendropy 4.0 support, so any user having this new version of Dendropy might need to check the 
-functionalities of this package and possibly upgrade / replace / edit few dendrop[y related functions. So, we 
-recommend users to use the earlier version of Dendropy, to avoid any conflict.
-
+**** Note: there is a new release of Dendropy 4.1.0 but we have used 3.12.0 for the implementation. We did not upgrade 
+the code for Dendropy 4.1.0 support, so user needs to use the older version of dendropy to use this code. 
 Support for Dendropy 4 and corresponding update of code will be done in a future release.
 
 3) Numpy ( available on the link: http://www.numpy.org/ )
@@ -126,7 +124,7 @@ Details of the options are mentioned below:
   
                         Name of the output file to contain target species tree. 
                         It is not mandatory to provide this option. If this option is not used, 
-                        a folder named (STAR / GLASS / STEAC/NJ_st) will be created (depending upon the 
+                        a folder named (STAR / GLASS / STEAC / NJ_st) will be created (depending upon the 
                         species tree generation method employed) in the directory containing the input 
                         gene tree list file. Within that new created directory, a file 'outtree_Newick.tre' will 
                         contain the output species tree.
@@ -146,7 +144,7 @@ Details of the options are mentioned below:
                         will be used for NJ based clustering (GLASS)
                         3 - average coalescence time of the couplets (with
                         respect to the gene trees) will be used for NJ based clustering (STEAC)
-                        4 - average branch count of the couplets (with
+                        4 - average internode count of the couplets (with
                         respect to the gene trees) will be used for NJ based clustering (NJ_st)
 
 Example of a command (followed for the results published in the manuscript)
@@ -174,7 +172,7 @@ standard redirection operation (>). For example, in the above command, all the d
 are redirected to file out.txt.
 
 As mentioned in the command options, specification of output species tree containing file is not mandatory. 
-In such a case, a folder named (STAR / GLASS / STEAC/NJ_st) will be created (depending upon the species tree 
+In such a case, a folder named (STAR / GLASS / STEAC / NJ_st) will be created (depending upon the species tree 
 generation method employed) in the directory containing the input gene tree list file. Within that new created 
 directory, a file 'outtree_Newick.tre' will contain the output species tree. Another file named 
 'Complete_Description.txt' will be created within that directory. It will contain the details of execution.
