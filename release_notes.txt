@@ -1,8 +1,18 @@
-Version 1.0
------------
 
-This version corresponds to the basic release of executing all three methods with single allelle gene trees.
-Input gene trees can be in either nexus or newick format.
+																				Release Notes
+																				--------------
+
+
+Version 2.2
+-------------
+
+Code clean, and updated documentation within individual functions.
+
+Version 2.1
+------------
+
+Multi allele gene tree parsing module has been upgraded.
+Indentation of the code is thoroughly checked and code is cleaned.
 
 Version 2.0
 ------------
@@ -22,9 +32,14 @@ trees, nexus formatted input gene trees may  be provided.
 computes the average branch count between individual couplets, with respect to all the gene trees, 
 and constructs species tree using Neighbor-Joining (NJ) method.
 
-Version 2.1
-------------
 
-Multi allele gene tree parsing module has been upgraded.
-Indentation of the code is thoroughly checked and code is cleaned.
+Version 1.0
+-----------
+
+This version corresponds to the basic release of executing all three methods with single allelle gene trees.
+Input gene trees can be in either nexus or newick format.
+
+
+
+
 
