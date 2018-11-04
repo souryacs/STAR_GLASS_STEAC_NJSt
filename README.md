@@ -1,7 +1,7 @@
-# STAR_GLASS_STEAC
-Implements various species tree construction methods from incongruent gene trees with Incomplete Lineage Sorting (ILS).
+STAR_GLASS_STEAC
+---------------
 
-Following four methods are implemented in this package.
+Implements various species tree construction methods from incongruent gene trees with Incomplete Lineage Sorting (ILS). Following four methods are implemented in this package.
 
 1) STAR (Liu et. al. 2009), which constructs species trees using couplet coalescence rank information.
 
@@ -11,19 +11,16 @@ Following four methods are implemented in this package.
 
 4) NJ_st (Liu et. al. 2011), which constructs species trees using average internode count for individual couplets.
 
-All of these methods use NJ based tree construction technique. Distance matrix (at couplet level) is 
-constructed using any of the above mentioned measures.
+All of these methods use NJ based tree construction technique. Distance matrix (at couplet level) is constructed using any of the above mentioned measures.
 
------------------
+
 Description
 ----------------
 
 Input
 ----------
 
-A collection of gene trees with overlapping taxa set (sampled genes), having topological incongruence due to Incomplete Lineage Sorting (ILS).
-
-Gene trees may be weighted (having branch length / coalescence time information) or may not be.
+A collection of gene trees with overlapping taxa set (sampled genes), having topological incongruence due to Incomplete Lineage Sorting (ILS). For execution of the methods STEAC or GLASS, the gene trees may be weighted (having branch length / coalescence time information). Other methods do not use weight information of the gene trees.
 
 Support for multi allele gene trees
 ---------------------------------------------
